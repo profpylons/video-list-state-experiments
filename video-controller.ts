@@ -30,6 +30,7 @@ const transitions: StateTransition[] = [
   {from: VideoState.Initialized, to: VideoState.Initialized},
   {from: VideoState.Initialized, to: VideoState.Playing},
   {from: VideoState.Initialized, to: VideoState.Paused},
+  {from: VideoState.Initialized, to: VideoState.Disposed},
 
   {from: VideoState.Playing, to: VideoState.Playing},
   {from: VideoState.Playing, to: VideoState.Paused},

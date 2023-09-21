@@ -10,7 +10,7 @@ type ControlledVideoView = {
 const videosState: ControlledVideoView[] = [];
 let panelIndex = -1;
 
-const disposeAtIndex = -2;
+const disposeAtIndex = -1;
 const initializeAtIndex = 2;
 
 export function Build() {
@@ -29,6 +29,7 @@ export function Build() {
 
 export function onScroll(newIndex: number) {
   const direction = newIndex < panelIndex ? -1 : 1;
+  prettyPrintState(`####### Scroll ${direction > 0 ? 'Forward' : 'Backward'} To: ViewIndex[${newIndex}]`);
   if (panelIndex > -1) {
     videosState[panelIndex].videoController.pause();
 
@@ -38,7 +39,6 @@ export function onScroll(newIndex: number) {
     });
   }
   panelIndex = newIndex;
-  prettyPrintState(`####### Scroll To: ViewIndex[${newIndex}]`);
 
   videosState
     .filter(videoView => toBeInitializedFilter(videoView, direction))
@@ -70,7 +70,7 @@ function playIfPossible(video: Video) {
       videoView.videoController.play();
       return;
     }
-    console.log(`Attempt to play video(${video.name}) DECLINED. State: ${VideoState[videoView?.videoController.state]}. Relative index: ${videoView?.relativeIndex}`);
+    console.log(`Attempt to play video(${video.name}) DENIED. State: ${VideoState[videoView?.videoController.state]}. Relative index: ${videoView?.relativeIndex}`);
   }
 }
 
@@ -79,7 +79,7 @@ function toBeInitializedFilter(videoView: ControlledVideoView, direction: number
 }
 
 function toBeDisposedFilter(videoView: ControlledVideoView, direction: number) {
-  return videoView.relativeIndex <= (disposeAtIndex * direction);
+  return videoView.relativeIndex <= (disposeAtIndex * direction * -1)
 }
 
 function prettyPrintState(event: string) {

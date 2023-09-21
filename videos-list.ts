@@ -22,22 +22,22 @@ const videos: Video[] = [
   },
   {
     index: 2,
-    name: 'Video Three',
+    name: 'Video Two',
     url: 'https://somewhere/2'
   },
   {
     index: 3,
-    name: 'Video Four',
+    name: 'Video Three',
     url: 'https://somewhere/3'
   },
   {
     index: 4,
-    name: 'Video Five',
+    name: 'Video Four',
     url: 'https://somewhere/4'
   },
   {
     index: 5,
-    name: 'Video Six',
+    name: 'Video Five',
     url: 'https://somewhere/5'
   },
 ];
