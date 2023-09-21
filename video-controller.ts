@@ -76,6 +76,7 @@ export class VideoController {
 
   public async initialize() {
     this.setState(VideoState.Initializing);
+    setTimeout(() => this.setState(VideoState.Initialized), 1 * seconds);
   }
 
   public async play() {
