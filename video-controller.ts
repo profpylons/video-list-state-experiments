@@ -56,16 +56,22 @@ export class VideoController {
 
   private setState(state: VideoState) {
     const transition = transitions.find(t => t.from === this._state && t.to === state);
+    const previous = this._state;
     if (!transition) {
       console.log(`******* INVALID STATE CHANGE Video(${this.video.index}) cannot be changed from state ${VideoState[this._state]} to ${VideoState[state]}`);
       return;
     }
     if (transition.resulting) {
       this._state = transition.resulting;
+      if (previous !== transition.resulting) {
+        this.stateListener(this._state, this.video);
+      }
     } else {
       this._state = state;
+      if (previous !== this._state) {
+        this.stateListener(this._state, this.video);
+      }
     }
-    this.stateListener(this._state, this.video);
   }
 
   public async initialize() {
