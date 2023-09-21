@@ -9,8 +9,39 @@ export enum VideoState {
   Playing,
   Paused,
   Disposed,
-  Error,
 }
+
+type StateTransition = {
+  from: VideoState;
+  to: VideoState;
+  resulting?: VideoState;
+};
+
+const transitions: StateTransition[] = [
+  {from: VideoState.NotInitialized, to: VideoState.NotInitialized},
+  {from: VideoState.NotInitialized, to: VideoState.Initializing},
+  {from: VideoState.NotInitialized, to: VideoState.Disposed},
+
+  {from: VideoState.Initializing, to: VideoState.Initializing},
+  {from: VideoState.Initializing, to: VideoState.Initialized},
+  {from: VideoState.Initializing, to: VideoState.Disposed},
+  {from: VideoState.Initializing, to: VideoState.Paused, resulting: VideoState.Initializing},
+
+  {from: VideoState.Initialized, to: VideoState.Initialized},
+  {from: VideoState.Initialized, to: VideoState.Playing},
+  {from: VideoState.Initialized, to: VideoState.Paused},
+
+  {from: VideoState.Playing, to: VideoState.Playing},
+  {from: VideoState.Playing, to: VideoState.Paused},
+  {from: VideoState.Playing, to: VideoState.Disposed},
+
+  {from: VideoState.Paused, to: VideoState.Paused},
+  {from: VideoState.Paused, to: VideoState.Playing},
+  {from: VideoState.Paused, to: VideoState.Disposed},
+
+  {from: VideoState.Disposed, to: VideoState.Disposed},
+  {from: VideoState.Disposed, to: VideoState.Initializing},
+];
 
 export type StateListener = (state: VideoState, video: Video) => void;
 
@@ -24,65 +55,32 @@ export class VideoController {
   }
 
   private setState(state: VideoState) {
-    this._state = state;
+    const transition = transitions.find(t => t.from === this._state && t.to === state);
+    if (!transition) {
+      console.log(`******* INVALID STATE CHANGE Video(${this.video.index}) cannot be changed from state ${VideoState[this._state]} to ${VideoState[state]}`);
+      return;
+    }
+    if (transition.resulting) {
+      this._state = transition.resulting;
+    } else {
+      this._state = state;
+    }
     this.stateListener(this._state, this.video);
   }
 
   public async initialize() {
-    switch (this._state) {
-      case VideoState.NotInitialized:
-        case VideoState.Disposed:
-        this.setState(VideoState.Initializing);
-
-        //simulate some loading time...
-        const waitTime = Math.floor(Math.random() * 0.5 * seconds) + 1 * seconds;
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-
-        this.setState(VideoState.Initialized);
-        break;
-      default:
-        console.log(`******* INVALID STATE CHANGE Video(${this.video.index}) cannot be initialized from state ${VideoState[this._state]}`);
-        return;
-    }
+    this.setState(VideoState.Initializing);
   }
 
   public async play() {
-    switch (this._state) {
-      case VideoState.Initialized:
-      case VideoState.Paused:
-        this.setState(VideoState.Playing);
-        break;
-      default:
-        console.log(`******* INVALID STATE CHANGE Video(${this.video.index}) cannot be played from state ${VideoState[this._state]}`);
-        return;
-    }
+    this.setState(VideoState.Playing);
   }
 
   public pause() {
-    switch (this._state) {
-      case VideoState.Paused:
-        break;
-      case VideoState.Playing:
-        this.setState(VideoState.Paused);
-        break;
-      default:
-        console.log(`******* INVALID STATE CHANGE Video(${this.video.index}) cannot be paused from state ${VideoState[this._state]}`);
-        break;
-    }
+    this.setState(VideoState.Paused);
   }
 
   public dispose() {
-    switch (this._state) {
-      case VideoState.NotInitialized:
-      case VideoState.Disposed:
-        break;
-      case VideoState.Initialized:
-      case VideoState.Paused:
-        this.setState(VideoState.Disposed);
-        break;
-      default:
-        console.log(`******* INVALID STATE CHANGE Video(${this.video.index}) cannot be disposed from state ${VideoState[this._state]}`);
-        break;
-    }
+    this.setState(VideoState.Disposed);
   }
 }
