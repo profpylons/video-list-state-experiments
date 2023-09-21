@@ -5,12 +5,12 @@ import * as view from './view'
 // Time            0----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9
 //
 // Video Lifetime
-//   loads         0---------| xxxxxxxxxxxxxxxxxxxxxxx
-//                 1---------|      xxxxxxxxxxxxxxxxxx
+//   loads         0---------| xxxxxxxxxxxxxxxxxxxxxxxx
+//                 1---------|      xxxxxxxxxxxxxxxxxxx
 //                 2---------|       xx2---------|
 //                  3---------|
 //                                  4---------|
-//                                   5---------|
+//                                   5--xxxxxxxxxxxxxxx
 // Time            0----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9
 //   Load(0)       .
 //   Scrolls(1)     ................
@@ -19,15 +19,12 @@ import * as view from './view'
 //   Scrolls(4)                       .
 //   Scrolls(3)                        ................
 // Time            0----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9
-//   (0)plays
-//   (1)plays                  11111
+//   (0)plays      x
+//   (1)plays       xxxxxxxxxxx11111
 //   (2)plays                       2
-//   (3)plays                        3 3333333
-//   (4)plays
+//   (3)plays                        3 3333333333333333
+//   (4)plays                         x
 //   (5)plays
-
-
-
 
 async function simulate() {
   view.Build();
