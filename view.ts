@@ -70,7 +70,7 @@ function playIfPossible(video: Video) {
       videoView.videoController.play();
       return;
     }
-    console.log(`Attempt to play video(${video.name}), but not ready. State: ${VideoState[videoView?.videoController.state]}. Relative index: ${videoView?.relativeIndex}`);
+    console.log(`Attempt to play video(${video.name}) DECLINED. State: ${VideoState[videoView?.videoController.state]}. Relative index: ${videoView?.relativeIndex}`);
   }
 }
 
