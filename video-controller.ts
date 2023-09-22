@@ -42,6 +42,7 @@ const transitions: StateTransition[] = [
 
   {from: VideoState.Disposed, to: VideoState.Disposed},
   {from: VideoState.Disposed, to: VideoState.Initializing},
+  {from: VideoState.Disposed, to: VideoState.Paused, resulting: VideoState.Disposed},
 ];
 
 export type StateListener = (state: VideoState, video: Video) => void;
@@ -76,6 +77,7 @@ export class VideoController {
   }
 
   public async initialize() {
+    console.log(`Video(${this.video.name}) initializing...`);
     this.setState(VideoState.Initializing);
     setTimeout(() => this.setState(VideoState.Initialized), 1 * seconds);
   }
